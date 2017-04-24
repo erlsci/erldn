@@ -82,7 +82,8 @@ make_token(Name, Line, Chars) ->
 make_token(Name, Line, Chars, Fun) ->
     {token, {Name, Line, Fun(Chars)}}.
 
-build_string(Type, Str, Line, _Len) ->
+build_string(Type, Str0, Line, _Len) ->
+  Str = re:replace(Str0, "\\\\(?!\\\\)", "", [global, {return, list}]),
   StrLen = length(Str),
   StringContent = lists:sublist(Str, 2, StrLen - 2),
   String = unicode:characters_to_binary(StringContent, utf8),
