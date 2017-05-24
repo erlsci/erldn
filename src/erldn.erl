@@ -34,7 +34,7 @@ items_to_string([H|T], Accum) ->
 to_string(Edn) -> lists:reverse(to_string(Edn, [])).
 
 to_string(Value, Accum) when is_binary(Value) ->
-    ["\"", escape_string(binary_to_list(Value)), "\""|Accum];
+    ["\"", escape_string(unicode:characters_to_list(Value)), "\""|Accum];
 to_string({symbol, Symbol}, Accum) -> [atom_to_list(Symbol)|Accum];
 to_string({keyword, nil}, Accum) -> [":nil"|Accum];
 to_string({char, C}, Accum) -> [["\\"|[C]]|Accum];
