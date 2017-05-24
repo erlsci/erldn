@@ -82,12 +82,19 @@ make_token(Name, Line, Chars) ->
 make_token(Name, Line, Chars, Fun) ->
     {token, {Name, Line, Fun(Chars)}}.
 
-build_string(Type, Str0, Line, _Len) ->
-  Str = re:replace(Str0, "\\\\(?!\\\\)", "", [global, {return, list}]),
+%build_string(Type, Str0, Line, _Len) ->
+  %Str = re:replace(Str0, "\\\\(?!\\\\)", "", [global, {return, list}]),
+  %StrLen = length(Str),
+  %StringContent = lists:sublist(Str, 2, StrLen - 2),
+  %String = unicode:characters_to_binary(StringContent, utf8),
+  %{token, {Type, Line, String}}.
+
+build_string(Type, Str, Line, _Len) ->
   StrLen = length(Str),
   StringContent = lists:sublist(Str, 2, StrLen - 2),
   String = unicode:characters_to_binary(StringContent, utf8),
-  {token, {Type, Line, String}}.
+  String2 = re:replace(String, "\\\\(?!\\\\)", "", [global, {return, binary}]),
+  {token, {Type, Line, String2}}.
 
 parse_number(Str) ->
     list_to_integer(Str).
