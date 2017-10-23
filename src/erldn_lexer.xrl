@@ -93,7 +93,19 @@ build_string(Type, Str, Line, _Len) ->
   StrLen = length(Str),
   StringContent = lists:sublist(Str, 2, StrLen - 2),
   String = unicode:characters_to_binary(StringContent, utf8),
-  String2 = re:replace(String, "\\\\(?!\\\\)", "", [global, {return, binary}]),
+  String2 = re:replace(
+            re:replace(
+              re:replace(
+                re:replace(
+                  re:replace(
+                    re:replace(
+                      re:replace(String, "\\\\n", "\n", [global, {return, binary}]),
+                      "\\\\t", "\t", [global, {return, binary}]),
+                    "\\\\r", "\r", [global, {return, binary}]),
+                  "\\\\f", "\f", [global, {return, binary}]),
+                "\\\\b", "\b", [global, {return, binary}]),
+              "\\\\\"", "\"", [global, {return, binary}]),
+            "\\\\\\\\", "\\", [global, {return, binary}]),
   {token, {Type, Line, String2}}.
 
 parse_number(Str) ->
