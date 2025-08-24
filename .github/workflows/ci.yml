@@ -29,7 +29,8 @@ jobs:
       run: rebar3 compile
     - name: Xref Checks
       run: rebar3 xref
-
+    - name: Dialyzer Checks
+      run: rebar3 dialyzer
     - name: Run Tests
       run: rebar3 eunit -v
     - name: Test Coverage
