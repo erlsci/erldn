@@ -1,7 +1,12 @@
+# Erlang/OTP specific ignores
 .eunit/
 ebin/
 src/erldn_lexer.erl
 src/erldn_parser.erl
+
+#Rebar3
+_build
+_checkouts
 
 # Editors/IDEs
 .idea

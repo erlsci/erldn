@@ -1,11 +1,26 @@
-{application, erldn,
- [
-  {description, "edn parser for erlang"},
-  {vsn, "1.0.5"},
-  {registered, []},
-  {applications, [
-                  kernel,
-                  stdlib
-                 ]},
-  {env, []}
- ]}.
+{application, erldn, [
+    {description, "An EDN parser for BEAM languages, to read Clojure's Extensible Data Notation"},
+    {vsn, "1.0.6"},
+    {registered, []},
+    {mod, {}},
+    {applications, [
+        kernel,
+        stdlib
+    ]},
+    {env, []},
+    {modules, []},
+
+    %% Package metadata
+    {licenses, ["Apache-2.0"]},
+    {files, ["src", "include", "rebar.config", "README.md", "LICENSE"]},
+    {links, [
+        {"GitHub", "https://github.com/erlsci/erldn"}
+    ]},
+    {build_tools, ["rebar3"]},
+
+    %% OTP application upgrade instructions
+    {runtime_dependencies, [
+        "kernel-6.0",
+        "stdlib-3.9"
+    ]}
+]}.

@@ -6,13 +6,9 @@
 
 *An EDN parser for BEAM languages, to read Clojure's Extensible Data Notation*
 
-erldn is a parser for the [edn specification](https://github.com/edn-format/edn).
+`erldn` is a low level parser: it simply provides an Erlang data structure.
 
-implemented using leex and yecc, tested with eunit.
-
-this is a low level parser, it gives you an erlang data structure where you
-have to decide how will you actually represent things like maps, sets, vectors
-since each person may have a different need, no imposition here.
+This project implements EDN support using leex and yecc. Results are tested with eunit.
 
 ## Build
 
@@ -142,11 +138,11 @@ without transforming it again. The mappings by default are:
 
 ## License
 
-MIT + optional beer for the author if you meet me
+The MIT License
 
 [//]: ---Named-Links---
 
-[logo]: priv/images/project.png
-[logo-large]: priv/images/project-large.png
+[logo]: priv/images/project.jpg
+[logo-large]: priv/images/project-large.jpg
 [gh-actions-badge]: https://github.com/erlsci/erldn/workflows/ci/badge.svg
 [gh-actions]: https://github.com/erlsci/erldn/actions?query=workflow%3Aci
