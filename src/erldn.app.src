@@ -1,6 +1,6 @@
 {application, erldn, [
     {description, "An EDN parser for BEAM languages, to read Clojure's Extensible Data Notation"},
-    {vsn, "1.0.7"},
+    {vsn, "1.1.0"},
     {registered, []},
     {applications, [
         kernel,
