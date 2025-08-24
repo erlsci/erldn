@@ -44,21 +44,35 @@ nested_set_test() -> check("#{1, (true, nil), 1.2}", {set, [1, [true, nil], 1.2]
 
 empty_map_test() -> check("{}", {map, []}).
 one_item_map_test() -> check("{1 true}", {map, [{1, true}]}).
-two_items_map_test() -> check("{1 true, false nil}",
-                              {map, [{1, true}, {false, nil}]}).
-three_items_map_test() -> check("{1 true, false nil, \"key\" 42}",
-                                {map, [{1, true}, {false, nil}, {<<"key">>, 42}]}).
-nested_items_map_test() -> check("{1 (true), false [nil], \"key\" #{42}}",
-                                {map, [{1, [true]},
-                                       {false, {vector, [nil]}},
-                                       {<<"key">>, {set, [42]}}]}).
+two_items_map_test() ->
+    check(
+        "{1 true, false nil}",
+        {map, [{1, true}, {false, nil}]}
+    ).
+three_items_map_test() ->
+    check(
+        "{1 true, false nil, \"key\" 42}",
+        {map, [{1, true}, {false, nil}, {<<"key">>, 42}]}
+    ).
+nested_items_map_test() ->
+    check(
+        "{1 (true), false [nil], \"key\" #{42}}",
+        {map, [
+            {1, [true]},
+            {false, {vector, [nil]}},
+            {<<"key">>, {set, [42]}}
+        ]}
+    ).
 
 simple_symbol_test() -> check("foo", {symbol, foo}).
 slash_symbol_test() -> check("/", {symbol, '/'}).
 start_with_slash_symbol_test() -> check("/foo", {symbol, '/foo'}).
 ns_symbol_test() -> check("ns/foo", {symbol, 'ns/foo'}).
-ns1_symbol_test() -> check("org.marianoguerra/erldn",
-                           {symbol, 'org.marianoguerra/erldn'}).
+ns1_symbol_test() ->
+    check(
+        "org.marianoguerra/erldn",
+        {symbol, 'org.marianoguerra/erldn'}
+    ).
 
 simple_keyword_test() -> check(":foo", foo).
 nil_keyword_test() -> check(":nil", {keyword, nil}).
@@ -69,13 +83,25 @@ ns_keyword_test() -> check(":ns/foo", 'ns/foo').
 ns1_keyword_test() -> check(":org.marianoguerra/erldn", 'org.marianoguerra/erldn').
 
 simple_tag_test() -> check("#answer 42", {tag, answer, 42}).
-map_tag_test() -> check("#myapp/Person {:first \"Fred\" :last \"Mertz\"}",
-                        {tag, 'myapp/Person', {map, [{first, <<"Fred">>},
-                                                     {last, <<"Mertz">>}]}}).
-instant_test() -> check("#inst \"1985-04-12T23:20:50.52Z\"",
-                        {tag, inst, <<"1985-04-12T23:20:50.52Z">>}).
-uuid_test() -> check("#uuid \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\"",
-                     {tag, uuid, <<"f81d4fae-7dec-11d0-a765-00a0c91e6bf6">>}).
+map_tag_test() ->
+    check(
+        "#myapp/Person {:first \"Fred\" :last \"Mertz\"}",
+        {tag, 'myapp/Person',
+            {map, [
+                {first, <<"Fred">>},
+                {last, <<"Mertz">>}
+            ]}}
+    ).
+instant_test() ->
+    check(
+        "#inst \"1985-04-12T23:20:50.52Z\"",
+        {tag, inst, <<"1985-04-12T23:20:50.52Z">>}
+    ).
+uuid_test() ->
+    check(
+        "#uuid \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\"",
+        {tag, uuid, <<"f81d4fae-7dec-11d0-a765-00a0c91e6bf6">>}
+    ).
 
 ignore_next_test() -> check("#_ 4", {ignore, 4}).
 ignore_next_number_no_space_test() -> check("#_4", {ignore, 4}).

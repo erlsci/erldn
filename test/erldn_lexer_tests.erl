@@ -34,15 +34,21 @@ simple_symbol_test() -> check("foo", {symbol, 1, foo}).
 slash_symbol_test() -> check("/", {symbol, 1, '/'}).
 start_with_slash_symbol_test() -> check("/foo", {symbol, 1, '/foo'}).
 ns_symbol_test() -> check("ns/foo", {symbol, 1, 'ns/foo'}).
-ns1_symbol_test() -> check("org.marianoguerra/erldn",
-                           {symbol, 1, 'org.marianoguerra/erldn'}).
+ns1_symbol_test() ->
+    check(
+        "org.marianoguerra/erldn",
+        {symbol, 1, 'org.marianoguerra/erldn'}
+    ).
 
 simple_keyword_test() -> check(":foo", {keyword, 1, foo}).
 slash_keyword_test() -> check(":/", {keyword, 1, '/'}).
 start_with_slash_keyword_test() -> check(":/foo", {keyword, 1, '/foo'}).
 ns_keyword_test() -> check(":ns/foo", {keyword, 1, 'ns/foo'}).
-ns1_keyword_test() -> check(":org.marianoguerra/erldn",
-                           {keyword, 1, 'org.marianoguerra/erldn'}).
+ns1_keyword_test() ->
+    check(
+        ":org.marianoguerra/erldn",
+        {keyword, 1, 'org.marianoguerra/erldn'}
+    ).
 
 char_test() -> check("\\c", {char, 1, $c}).
 char1_test() -> check("\\D", {char, 1, $D}).
@@ -57,5 +63,8 @@ char_in_a_string_test() -> check("\"hi \\c !\"", {string, 1, <<"hi \\c !">>}).
 ignore_token_test() -> check("#_", {ignore, 1, '#_'}).
 
 comment_test() -> check("1 ; this is a comment \n", {integer, 1, 1}).
-comment_inside_string_test() -> check("\"; this is NOT a comment\n\"",
-                                      {string, 1, <<"; this is NOT a comment\n">>}).
+comment_inside_string_test() ->
+    check(
+        "\"; this is NOT a comment\n\"",
+        {string, 1, <<"; this is NOT a comment\n">>}
+    ).

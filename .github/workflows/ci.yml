@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        otp_version: [25, 26, 27, 28]
+        otp_version: [28, 27, 26, 25]
 
     steps:
     - uses: actions/checkout@v4
@@ -27,6 +27,8 @@ jobs:
       run: rebar3 --version
     - name: Compile
       run: rebar3 compile
+    - name: Format Checks
+      run: rebar3 fmt --check
     - name: Xref Checks
       run: rebar3 xref
     - name: Dialyzer Checks
