@@ -9,7 +9,7 @@ parse_multi_file_success_test() ->
     file:write_file(TempFile, Content),
 
     % Test the function
-    Result = erldn:parse_multi_file(TempFile),
+    Result = erldn:parse_file(TempFile),
     file:delete(TempFile),
 
     ?assertMatch({ok, [42, <<"hello">>, true, keyword]}, Result).
@@ -17,7 +17,7 @@ parse_multi_file_success_test() ->
 %% Test parse_multi_file/1 with file read error
 parse_multi_file_read_error_test() ->
     % Try to parse a non-existent file
-    Result = erldn:parse_multi_file("nonexistent_multi.edn"),
+    Result = erldn:parse_file("nonexistent_multi.edn"),
     ?assertMatch({error, {file_error, enoent}}, Result).
 
 %% Test parse_multi_file/1 with wrong extension
@@ -26,7 +26,7 @@ parse_multi_file_wrong_extension_test() ->
     TempFile = "temp_multi_test.txt",
     file:write_file(TempFile, "42"),
 
-    Result = erldn:parse_multi_file(TempFile),
+    Result = erldn:parse_file(TempFile),
     file:delete(TempFile),
 
     ?assertMatch({error, {invalid_extension, ".txt"}}, Result).
@@ -39,7 +39,7 @@ parse_multi_with_existing_file_test() ->
     file:write_file(TempFile, Content),
 
     % This should call parse_multi_file internally
-    Result = erldn:parse_multi(TempFile),
+    Result = erldn:parse(TempFile),
     file:delete(TempFile),
 
     ?assertMatch({ok, [1, 2, 3]}, Result).
@@ -49,7 +49,7 @@ parse_multi_file_empty_test() ->
     TempFile = "temp_empty_multi.edn",
     file:write_file(TempFile, ""),
 
-    Result = erldn:parse_multi_file(TempFile),
+    Result = erldn:parse_file(TempFile),
     file:delete(TempFile),
 
     % Empty input should cause parser error
@@ -61,7 +61,7 @@ parse_multi_file_complex_test() ->
     Content = "{:a 1}\n[1 2 3]\n#{:x :y}\n{:nested {:map true}}",
     file:write_file(TempFile, Content),
 
-    Result = erldn:parse_multi_file(TempFile),
+    Result = erldn:parse_file(TempFile),
     file:delete(TempFile),
 
     Expected = [
@@ -78,7 +78,7 @@ parse_multi_file_binary_content_test() ->
     Content = <<"42\n\"test\"\ntrue">>,
     file:write_file(TempFile, Content),
 
-    Result = erldn:parse_multi_file(TempFile),
+    Result = erldn:parse_file(TempFile),
     file:delete(TempFile),
 
     ?assertMatch({ok, [42, <<"test">>, true]}, Result).

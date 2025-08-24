@@ -34,7 +34,7 @@ simple_symbol_test() -> check("foo", {symbol, 1, foo}).
 slash_symbol_test() -> check("/", {symbol, 1, '/'}).
 start_with_slash_symbol_test() -> check("/foo", {symbol, 1, '/foo'}).
 ns_symbol_test() -> check("ns/foo", {symbol, 1, 'ns/foo'}).
-ns1_symbol_test() ->
+lexer_ns1_symbol_test() ->
     check(
         "org.marianoguerra/erldn",
         {symbol, 1, 'org.marianoguerra/erldn'}

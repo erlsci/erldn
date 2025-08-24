@@ -26,7 +26,7 @@ comprehensive_multi_value_workflow_test() ->
     file:write_file(TempFile, Content),
 
     % Test multi-file parsing
-    {ok, ParsedData} = erldn:parse_multi_file(TempFile),
+    {ok, ParsedData} = erldn:parse_file(TempFile),
 
     % Clean up
     file:delete(TempFile),
@@ -46,7 +46,7 @@ error_propagation_test() ->
     % 1. Test file error propagation
     ?assertMatch(
         {error, {file_error, _}},
-        erldn:parse_multi_file("nonexistent.edn")
+        erldn:parse_file("nonexistent.edn")
     ),
 
     % 2. Test extension error propagation
@@ -54,7 +54,7 @@ error_propagation_test() ->
     file:write_file(TempFile, "data"),
     ?assertMatch(
         {error, {invalid_extension, ".wrong"}},
-        erldn:parse_multi_file(TempFile)
+        erldn:parse_file(TempFile)
     ),
     file:delete(TempFile),
 
@@ -62,12 +62,12 @@ error_propagation_test() ->
     ?assertMatch(
         {error, _, _},
         % Unclosed map
-        erldn:parse_multi_str("{")
+        erldn:parse_str("{")
     ),
 
     % 4. Test that parse_multi correctly handles both cases
-    ?assertMatch({ok, [42]}, erldn:parse_multi("42")),
-    ?assertMatch({ok, [1, 2]}, erldn:parse_multi("1 2")).
+    ?assertMatch({ok, 42}, erldn:parse("42")),
+    ?assertMatch({ok, [1, 2]}, erldn:parse("1 2")).
 
 %% Test complete round-trip: create -> parse -> convert -> parse again
 round_trip_integration_test() ->
@@ -109,7 +109,7 @@ file_round_trip_test() ->
     file:write_file(TempFile, Content),
 
     % Parse from file
-    {ok, ParsedValues} = erldn:parse_multi_file(TempFile),
+    {ok, ParsedValues} = erldn:parse_file(TempFile),
     file:delete(TempFile),
 
     % Verify we got back what we put in
@@ -154,10 +154,10 @@ binary_string_input_test() ->
     TestData = "42 \"hello\" true",
 
     % Test string input
-    {ok, Result1} = erldn:parse_multi(TestData),
+    {ok, Result1} = erldn:parse(TestData),
 
     % Test binary input
-    {ok, Result2} = erldn:parse_multi(list_to_binary(TestData)),
+    {ok, Result2} = erldn:parse(list_to_binary(TestData)),
 
     % Should get same results
     ?assertEqual(Result1, Result2),
@@ -173,7 +173,7 @@ large_multi_value_test() ->
     Content = string:join(EdnStrings, " "),
 
     % Parse as multi-value
-    {ok, ParsedData} = erldn:parse_multi_str(Content),
+    {ok, ParsedData} = erldn:parse_str(Content),
 
     % Verify all data parsed correctly
     ?assertEqual(LargeData, ParsedData),
@@ -188,11 +188,11 @@ mixed_file_operations_test() ->
         file:write_file(TempFile, "1 2 3"),
 
         % Parse with parse_multi (should detect file)
-        {ok, Result1} = erldn:parse_multi(TempFile),
+        {ok, Result1} = erldn:parse(TempFile),
         ?assertEqual([1, 2, 3], Result1),
 
         % Parse with parse_multi_file directly
-        {ok, Result2} = erldn:parse_multi_file(TempFile),
+        {ok, Result2} = erldn:parse_file(TempFile),
         ?assertEqual([1, 2, 3], Result2),
 
         % Parse with regular parse (should detect file)

@@ -4,9 +4,6 @@
     parse/1,
     parse_file/1,
     parse_str/1,
-    parse_multi/1,
-    parse_multi_str/1,
-    parse_multi_file/1,
     to_string/1,
     to_erlang/1, to_erlang/2
 ]).
@@ -48,40 +45,6 @@ parse_str(Str) ->
             Error
     end.
 
-parse_multi(Bin) when is_binary(Bin) ->
-    parse_multi_str(binary_to_list(Bin));
-parse_multi(Input) when is_list(Input) ->
-    case filelib:is_file(Input) of
-        true ->
-            parse_multi_file(Input);
-        false ->
-            parse_multi_str(Input)
-    end.
-
-parse_multi_file(Filename) ->
-    case filename:extension(Filename) of
-        ".edn" ->
-            case file:read_file(Filename) of
-                {ok, Data} ->
-                    parse_multi(Data);
-                {error, Reason} ->
-                    {error, {file_error, Reason}}
-            end;
-        _ ->
-            {error, {invalid_extension, filename:extension(Filename)}}
-    end.
-
-parse_multi_str(Str) ->
-    case lex_str(Str) of
-        {ok, Tokens, _} ->
-            case erldn_parser:parse(Tokens) of
-                {ok, Values} -> {ok, Values};
-                {error, Error} -> {error, Error, nil}
-            end;
-        Error ->
-            Error
-    end.
-
 to_string(Edn) -> lists:reverse(to_string(Edn, [])).
 
 to_erlang(Val) -> to_erlang(Val, []).
@@ -114,6 +77,17 @@ to_erlang(Val, _Handlers) ->
 %%% Private functions
 %%%
 %%% These functions are not exported and are used internally by the module.
+
+parse_multi_str(Str) ->
+    case lex_str(Str) of
+        {ok, Tokens, _} ->
+            case erldn_parser:parse(Tokens) of
+                {ok, Values} -> {ok, Values};
+                {error, Error} -> {error, Error, nil}
+            end;
+        Error ->
+            Error
+    end.
 
 keyvals_to_string(Items) -> keyvals_to_string(Items, []).
 

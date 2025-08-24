@@ -82,25 +82,37 @@ In your project's `rebar.config`:
 ## API
 
 ### parse/1
-TODO:
+high-level parsing function that accepts either binary or string input; automatically
+detects if input is a filename ending in `.edn` and reads the file, otherwise
+parses the input directly; for single values returns the unwrapped result,
+for multiple values returns a list
+
+### parse_file/1
+parses an EDN file by reading the contents and parsing them; the filename must
+end with `.edn` extension; supports both single and multiple top-level values
 
 ### parse_str/1
-parses a string with edn into an erlang data structure maintaining all
-the details from the original edn
+parses a string with EDN into an erlang data structure maintaining all
+the details from the original edn; for single values returns unwrapped result,
+for multiple values returns a list
 
 ### to_string/1
-converts the result from *parse_str/1* into an edn string representation
+converts the result from parsing functions into an edn string representation
 
 ### to_erlang/1
-converts the result from *parse_str/1* into an erlang-friendly version of
+converts the result from parsing functions into an erlang-friendly version of
 itself; see "To Erlang Mappings" below.
 
 ### to_erlang/2
-like *to_erlang/1* but accepts a tuplelist as a second argument with a
+like `to_erlang/1` but accepts a tuplelist as a second argument with a
 tag as the first argument and a function `(fun (Tag, Value, OtherHandlers) -> .. end)`
 as the second of each pair to handle tagged values.
 
-check the unit tests for usage examples.
+### lex_str/1
+tokenizes an EDN string into a list of lexical tokens; primarily used internally
+by the parser but can be useful for debugging or custom parsing scenarios
+
+Be sure to check the unit tests for usage examples; there are hundreds of them.
 
 ## Type Mappings
 

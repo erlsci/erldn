@@ -7,7 +7,7 @@ parse_multi_str_lexer_error_test() ->
     % Unterminated string should cause lexer error
     InvalidInput = "\"unclosed string",
 
-    Result = erldn:parse_multi_str(InvalidInput),
+    Result = erldn:parse_str(InvalidInput),
 
     % Lexer error comes back in a complex format, just check it's an error
     ?assert(
@@ -33,7 +33,7 @@ parse_multi_str_various_lexer_errors_test() ->
     % Test each and expect some kind of error
     lists:foreach(
         fun(Input) ->
-            Result = erldn:parse_multi_str(Input),
+            Result = erldn:parse_str(Input),
             % Should be some kind of error
             case Result of
                 % Lexer error
@@ -56,7 +56,7 @@ lexer_error_propagation_test() ->
 
     % Invalid UTF-8 byte
     BadChar = [255],
-    Result = erldn:parse_multi_str(BadChar),
+    Result = erldn:parse_str(BadChar),
 
     % Should get some kind of error
     ?assert(
@@ -71,12 +71,12 @@ lexer_error_propagation_test() ->
 
 %% Test empty input handling in parse_multi_str
 empty_input_lexer_test() ->
-    Result = erldn:parse_multi_str(""),
+    Result = erldn:parse_str(""),
     % Empty input should cause an error (no tokens to parse)
     ?assertMatch({error, _, _}, Result).
 
 %% Test whitespace-only input
 whitespace_only_lexer_test() ->
-    Result = erldn:parse_multi_str("   \n\t  "),
+    Result = erldn:parse_str("   \n\t  "),
     % Whitespace-only should also cause an error (no meaningful tokens)
     ?assertMatch({error, _, _}, Result).

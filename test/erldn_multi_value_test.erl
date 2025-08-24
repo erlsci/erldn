@@ -4,19 +4,19 @@
 %% Test parsing multiple integers
 multi_integers_test() ->
     Input = "1 2 3",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([1, 2, 3], Result).
 
 %% Test parsing mixed types
 mixed_types_test() ->
     Input = "42 \"hello\" true nil :keyword",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([42, <<"hello">>, true, nil, keyword], Result).
 
 %% Test parsing complex structures
 complex_structures_test() ->
     Input = "{:a 1} [1 2 3] #{4 5}",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     Expected = [
         {map, [{a, 1}]},
         {vector, [1, 2, 3]},
@@ -28,10 +28,10 @@ complex_structures_test() ->
 single_value_compatibility_test() ->
     Input = "42",
     {ok, Result} = erldn:parse_str(Input),
-    ?assertEqual(42, Result),
+    ?assertEqual(42, Result).
 
-    {ok, MultiResult} = erldn:parse_multi_str(Input),
-    ?assertEqual([42], MultiResult).
+% Note: parse_str now intelligently returns single values unwrapped
+% and multiple values as lists, so both calls return the same thing
 
 %% Test backward compatibility
 backward_compatibility_test() ->
@@ -46,18 +46,18 @@ backward_compatibility_test() ->
 %% Test with comments and whitespace
 with_whitespace_test() ->
     Input = "1   2    3",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([1, 2, 3], Result).
 
 %% Test empty input (expect error as parser cannot handle empty input)
 empty_input_test() ->
-    Result = erldn:parse_multi_str(""),
+    Result = erldn:parse_str(""),
     ?assertMatch({error, _, _}, Result).
 
 %% Test multiple maps
 multiple_maps_test() ->
     Input = "{:a 1} {:b 2}",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     Expected = [
         {map, [{a, 1}]},
         {map, [{b, 2}]}
@@ -67,7 +67,7 @@ multiple_maps_test() ->
 %% Test multiple vectors
 multiple_vectors_test() ->
     Input = "[1 2] [3 4]",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     Expected = [
         {vector, [1, 2]},
         {vector, [3, 4]}
@@ -77,7 +77,7 @@ multiple_vectors_test() ->
 %% Test nested structures
 nested_structures_test() ->
     Input = "((1)) [[2]] #{#{3}}",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     Expected = [
         [[1]],
         {vector, [{vector, [2]}]},
@@ -88,19 +88,19 @@ nested_structures_test() ->
 %% Test parse_multi/1 with binary input
 multi_binary_input_test() ->
     Input = <<"1 2 3">>,
-    {ok, Result} = erldn:parse_multi(Input),
+    {ok, Result} = erldn:parse(Input),
     ?assertEqual([1, 2, 3], Result).
 
 %% Test parse_multi/1 with string input (non-file)
 multi_string_input_test() ->
     Input = "1 2 3",
-    {ok, Result} = erldn:parse_multi(Input),
+    {ok, Result} = erldn:parse(Input),
     ?assertEqual([1, 2, 3], Result).
 
 %% Test symbols and keywords
 symbols_and_keywords_test() ->
     Input = "symbol1 :keyword1 symbol2 :keyword2",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     Expected = [
         {symbol, symbol1},
         keyword1,
@@ -112,13 +112,13 @@ symbols_and_keywords_test() ->
 %% Test boolean and nil values
 boolean_nil_test() ->
     Input = "true false nil",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([true, false, nil], Result).
 
 %% Test characters (note: $a syntax is parsed as symbols in this implementation)
 characters_test() ->
     Input = "$a $b $c",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     Expected = [
         {symbol, '$a'},
         {symbol, '$b'},
@@ -129,19 +129,19 @@ characters_test() ->
 %% Test strings
 strings_test() ->
     Input = "\"hello\" \"world\"",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([<<"hello">>, <<"world">>], Result).
 
 %% Test floats
 floats_test() ->
     Input = "1.5 2.7 -3.14",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([1.5, 2.7, -3.14], Result).
 
 %% Test large numbers
 large_numbers_test() ->
     Input = "123456789 -987654321",
-    {ok, Result} = erldn:parse_multi_str(Input),
+    {ok, Result} = erldn:parse_str(Input),
     ?assertEqual([123456789, -987654321], Result).
 
 %% Test parse/1 auto-detection with multi-value

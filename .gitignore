@@ -1,4 +1,5 @@
 # Erlang/OTP specific ignores
+erl_crash.dump
 .eunit/
 ebin/
 src/erldn_lexer.erl
