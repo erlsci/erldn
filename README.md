@@ -29,7 +29,7 @@ In your project's `rebar.config`:
 ]}.
 ```
 
-## Use
+## Usage Examples
 
 ```erlang
 1> erldn:parse("{}").
@@ -59,23 +59,23 @@ In your project's `rebar.config`:
 9> erldn:parse("#myapp/Person {:first \"Fred\" :last \"Mertz\"}").
 {ok,{tag,'myapp/Person',
          {map,[{first,"Fred"},{last,"Mertz"}]}}}
-         10> erldn:parse("#{1 true #_ nil :foo ns/foo}").
-         {ok,{set,[1,true,{ignore,nil},foo,{symbol,'ns/foo'}]}}
-         11> erldn:parse("#{1 true #_ 42 :foo ns/foo}").
-         {ok,{set,[1,true,{ignore,42},foo,{symbol,'ns/foo'}]}}
+
+ 10> erldn:parse("#{1 true #_ nil :foo ns/foo}").
+ {ok,{set,[1,true,{ignore,nil},foo,{symbol,'ns/foo'}]}}
+ 11> erldn:parse("#{1 true #_ 42 :foo ns/foo}").
+ {ok,{set,[1,true,{ignore,42},foo,{symbol,'ns/foo'}]}}
 
  % to_string
 
- 10> {ok, Result} = erldn:parse("{:a 42}").
+ 12> {ok, Result} = erldn:parse("{:a 42}").
  {ok,{map,[{a,42}]}}
-
- 11> io:format("~s~n", [erldn:to_string(Result)]).
+ 13> io:format("~s~n", [erldn:to_string(Result)]).
  {:a 42}
  ok
 
  % to_erlang
 
- 12> erldn:to_erlang(element(2, erldn:parse("[1, nil, :nil, \"asd\"]"))).
+ 14> erldn:to_erlang(element(2, erldn:parse("[1, nil, :nil, \"asd\"]"))).
  [1,nil,nil,<<"asd">>]
 ```
 
