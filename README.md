@@ -18,6 +18,7 @@ Notes on how this fork differs from the original:
 * provides a `parse_file/1` function
 * adds support for multiple top-level EDN data elements in a single input (returns a list of results)
 * WIP: add support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
+* and [more to come](https://github.com/erlsci/erldn/issues) ...
 
 ## Add Dependency
 
