@@ -10,16 +10,14 @@
 
 This project implements EDN support using leex and yecc. Results are tested with eunit.
 
-## Build
+## Add Dependency
 
-```
-./rebar compile
-```
+In your project's `rebar.config`:
 
-## Test
-
-```
-./rebar eunit
+```erlang
+{deps, [
+    {erldn, "1.1.0", {pkg, erlsci_edn}},
+]}.
 ```
 
 ## Use

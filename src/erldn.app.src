@@ -11,6 +11,7 @@
     {modules, []},
 
     %% Package metadata
+    {pkg_name, erlsci_edn},
     {licenses, ["Apache-2.0"]},
     {files, ["src", "include", "rebar.config", "README.md", "LICENSE"]},
     {links, [
