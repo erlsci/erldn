@@ -60,23 +60,23 @@ In your project's `rebar.config`:
 {ok,{tag,'myapp/Person',
          {map,[{first,"Fred"},{last,"Mertz"}]}}}
 
- 10> erldn:parse("#{1 true #_ nil :foo ns/foo}").
- {ok,{set,[1,true,{ignore,nil},foo,{symbol,'ns/foo'}]}}
- 11> erldn:parse("#{1 true #_ 42 :foo ns/foo}").
- {ok,{set,[1,true,{ignore,42},foo,{symbol,'ns/foo'}]}}
+10> erldn:parse("#{1 true #_ nil :foo ns/foo}").
+{ok,{set,[1,true,{ignore,nil},foo,{symbol,'ns/foo'}]}}
+11> erldn:parse("#{1 true #_ 42 :foo ns/foo}").
+{ok,{set,[1,true,{ignore,42},foo,{symbol,'ns/foo'}]}}
 
- % to_string
+% to_string
 
- 12> {ok, Result} = erldn:parse("{:a 42}").
- {ok,{map,[{a,42}]}}
- 13> io:format("~s~n", [erldn:to_string(Result)]).
- {:a 42}
- ok
+12> {ok, Result} = erldn:parse("{:a 42}").
+{ok,{map,[{a,42}]}}
+13> io:format("~s~n", [erldn:to_string(Result)]).
+{:a 42}
+ok
 
- % to_erlang
+% to_erlang
 
- 14> erldn:to_erlang(element(2, erldn:parse("[1, nil, :nil, \"asd\"]"))).
- [1,nil,nil,<<"asd">>]
+14> erldn:to_erlang(element(2, erldn:parse("[1, nil, :nil, \"asd\"]"))).
+[1,nil,nil,<<"asd">>]
 ```
 
 ## API
