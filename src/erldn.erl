@@ -1,7 +1,37 @@
 -module(erldn).
--export([lex_str/1, parse_str/1, to_string/1, to_erlang/1, to_erlang/2]).
+-export([
+    lex_str/1,
+    parse/1,
+    parse_file/1,
+    parse_str/1,
+    to_string/1,
+    to_erlang/1, to_erlang/2
+]).
 
 lex_str(Str) -> erldn_lexer:string(Str).
+
+parse(Bin) when is_binary(Bin) ->
+    parse_str(binary_to_list(Bin));
+parse(Input) when is_list(Input) ->
+    case filelib:is_file(Input) of
+        true ->
+            parse_file(Input);
+        false ->
+            parse_str(Input)
+    end.
+
+parse_file(Filename) ->
+    case filename:extension(Filename) of
+        ".edn" ->
+            case file:read_file(Filename) of
+                {ok, Data} ->
+                    parse(Data);
+                {error, Reason} ->
+                    {error, {file_error, Reason}}
+            end;
+        _ ->
+            {error, {invalid_extension, filename:extension(Filename)}}
+    end.
 
 parse_str(Str) ->
     case lex_str(Str) of

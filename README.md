@@ -10,6 +10,13 @@
 
 This project implements EDN support using leex and yecc. Results are tested with eunit.
 
+Notes on how this fork differs from the original:
+
+* provides a new top-level `parse/1` function
+* supports binary input
+* support file input (if the passed string is a file that exists and ends with `.edn`, it will be read)
+* provides a `parse_file/1` function
+
 ## Add Dependency
 
 In your project's `rebar.config`:
