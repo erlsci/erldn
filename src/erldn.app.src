@@ -3,7 +3,10 @@
     {vsn, "1.0.7"},
     {registered, []},
     {mod, {}},
-    {applications, []},
+    {applications, [
+        kernel,
+        stdlib
+    ]},
     {env, []},
     {modules, []},
 
