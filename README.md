@@ -16,7 +16,8 @@ Notes on how this fork differs from the original:
 * supports binary input (in addition to the original string input)
 * support file input (if the passed string is a file that exists and ends with `.edn`, it will be read)
 * provides a `parse_file/1` function
-* WIP: adds support for multiple top-level EDN data elements in a single input (returns a list of results)
+* adds support for multiple top-level EDN data elements in a single input (returns a list of results)
+* WIP: add support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
 
 ## Add Dependency
 

@@ -4,9 +4,14 @@
     parse/1,
     parse_file/1,
     parse_str/1,
+    parse_multi/1,
+    parse_multi_str/1,
+    parse_multi_file/1,
     to_string/1,
     to_erlang/1, to_erlang/2
 ]).
+
+%%% API functions
 
 lex_str(Str) -> erldn_lexer:string(Str).
 
@@ -34,15 +39,81 @@ parse_file(Filename) ->
     end.
 
 parse_str(Str) ->
+    case parse_multi_str(Str) of
+        {ok, [SingleValue]} ->
+            {ok, SingleValue};
+        {ok, MultipleValues} ->
+            {ok, MultipleValues};
+        Error ->
+            Error
+    end.
+
+parse_multi(Bin) when is_binary(Bin) ->
+    parse_multi_str(binary_to_list(Bin));
+parse_multi(Input) when is_list(Input) ->
+    case filelib:is_file(Input) of
+        true ->
+            parse_multi_file(Input);
+        false ->
+            parse_multi_str(Input)
+    end.
+
+parse_multi_file(Filename) ->
+    case filename:extension(Filename) of
+        ".edn" ->
+            case file:read_file(Filename) of
+                {ok, Data} ->
+                    parse_multi(Data);
+                {error, Reason} ->
+                    {error, {file_error, Reason}}
+            end;
+        _ ->
+            {error, {invalid_extension, filename:extension(Filename)}}
+    end.
+
+parse_multi_str(Str) ->
     case lex_str(Str) of
         {ok, Tokens, _} ->
             case erldn_parser:parse(Tokens) of
-                {ok, Tree} -> {ok, Tree};
+                {ok, Values} -> {ok, Values};
                 {error, Error} -> {error, Error, nil}
             end;
         Error ->
             Error
     end.
+
+to_string(Edn) -> lists:reverse(to_string(Edn, [])).
+
+to_erlang(Val) -> to_erlang(Val, []).
+
+to_erlang({char, Char}, _Handlers) ->
+    unicode:characters_to_binary([Char], utf8);
+to_erlang({keyword, nil}, _Handlers) ->
+    nil;
+to_erlang({vector, Items}, Handlers) ->
+    to_erlang(Items, Handlers);
+to_erlang({set, Items}, Handlers) ->
+    sets:from_list(to_erlang(Items, Handlers));
+to_erlang({map, Kvs}, Handlers) ->
+    dict:from_list(lists:map(fun(V) -> key_vals_to_erlang(V, Handlers) end, Kvs));
+to_erlang(Val, Handlers) when is_list(Val) ->
+    lists:map(fun(V) -> to_erlang(V, Handlers) end, Val);
+to_erlang({tag, Tag, Val}, Handlers) ->
+    Result = lists:keyfind(Tag, 1, Handlers),
+
+    if
+        Result == false ->
+            throw({handler_not_found_for_tag, Tag});
+        true ->
+            {_, Handler} = Result,
+            Handler(Tag, Val, Handlers)
+    end;
+to_erlang(Val, _Handlers) ->
+    Val.
+
+%%% Private functions
+%%%
+%%% These functions are not exported and are used internally by the module.
 
 keyvals_to_string(Items) -> keyvals_to_string(Items, []).
 
@@ -58,8 +129,6 @@ items_to_string(Items) -> items_to_string(Items, []).
 items_to_string([], Accum) -> lists:reverse(Accum);
 items_to_string([H], Accum) -> items_to_string([], [to_string(H) | Accum]);
 items_to_string([H | T], Accum) -> items_to_string(T, [(to_string(H) ++ " ") | Accum]).
-
-to_string(Edn) -> lists:reverse(to_string(Edn, [])).
 
 to_string(Value, Accum) when is_binary(Value) ->
     ["\"", escape_string(unicode:characters_to_list(Value)), "\"" | Accum];
@@ -108,30 +177,3 @@ map_escaped_char(Char) ->
 
 key_vals_to_erlang({Key, Val}, Handlers) ->
     {to_erlang(Key, Handlers), to_erlang(Val, Handlers)}.
-
-to_erlang(Val) -> to_erlang(Val, []).
-
-to_erlang({char, Char}, _Handlers) ->
-    unicode:characters_to_binary([Char], utf8);
-to_erlang({keyword, nil}, _Handlers) ->
-    nil;
-to_erlang({vector, Items}, Handlers) ->
-    to_erlang(Items, Handlers);
-to_erlang({set, Items}, Handlers) ->
-    sets:from_list(to_erlang(Items, Handlers));
-to_erlang({map, Kvs}, Handlers) ->
-    dict:from_list(lists:map(fun(V) -> key_vals_to_erlang(V, Handlers) end, Kvs));
-to_erlang(Val, Handlers) when is_list(Val) ->
-    lists:map(fun(V) -> to_erlang(V, Handlers) end, Val);
-to_erlang({tag, Tag, Val}, Handlers) ->
-    Result = lists:keyfind(Tag, 1, Handlers),
-
-    if
-        Result == false ->
-            throw({handler_not_found_for_tag, Tag});
-        true ->
-            {_, Handler} = Result,
-            Handler(Tag, Val, Handlers)
-    end;
-to_erlang(Val, _Handlers) ->
-    Val.

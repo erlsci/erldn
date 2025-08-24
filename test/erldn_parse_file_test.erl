@@ -22,17 +22,23 @@ test_parse_edn_file(EdnDir, Filename) ->
         Result2 = erldn:parse(FullPath),
         ?assertEqual(Result, Result2),
 
-        % The result should be either {ok, _} or {error, _, _} (parsing error for multi-value files)
+        % The result should be {ok, _} (either single value or list of values)
         case Result of
             {ok, _} ->
-                % Single value file parsed successfully
-                ok;
-            {error, _, _} ->
-                % Multi-value file failed to parse as single EDN (expected)
+                % Successfully parsed (single or multiple values)
                 ok;
             {error, {file_error, _}} ->
                 % File read error (unexpected)
-                ?assert(false)
+                ?assert(false);
+            {error, _, _} ->
+                % TODO: Some files may contain unsupported EDN features (like ##Inf, ##-Inf, ##NaN)
+                % See: https://github.com/erlsci/erldn/issues/10
+                % For now, we expect these to fail gracefully
+                case Filename of
+                    % Known to contain ##Inf, ##-Inf, ##NaN
+                    "edge-numbers.edn" -> ok;
+                    _ -> ?assert(false)
+                end
         end
     end}.
 

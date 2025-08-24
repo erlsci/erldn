@@ -1,11 +1,14 @@
 Nonterminals
-    value list list_items vector set map key_value_pairs key_value_pair tagged.
+    values value list list_items vector set map key_value_pairs key_value_pair tagged.
 
 Terminals
     float integer boolean string nil open_list close_list open_vector
     close_vector open_map close_map sharp ignore keyword symbol char.
 
-Rootsymbol value.
+Rootsymbol values.
+
+values -> value : ['$1'].
+values -> value values : ['$1'|'$2'].
 
 list_items -> value : ['$1'].
 list_items -> value list_items : ['$1'|'$2'].
