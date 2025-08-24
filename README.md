@@ -1,4 +1,10 @@
-# erldn - an edn parser for the erlang platform
+# erldn
+
+[![Build Status][gh-actions-badge]][gh-actions]
+
+[![Project Logo][logo]][logo-large]
+
+*An EDN parser for BEAM languages, to read Clojure's Extensible Data Notation*
 
 erldn is a parser for the [edn specification](https://github.com/edn-format/edn).
 
@@ -129,27 +135,18 @@ without transforming it again. The mappings by default are:
 | symbol | stay the same |
 | tagged elements | call registered handler for that tag, fail if not found |
 
-## TODO
-
-nothing that I can think of!
-
 ## Notes
 
 * since keywords are mapped to atoms and nil is mapped to the nil atom, if
   the nil keyword is encountered it will be mapped to {keyword, nil}.
 
-## Author
-
-marianoguerra
-
 ## License
 
 MIT + optional beer for the author if you meet me
 
-## Notes to myself
+[//]: ---Named-Links---
 
-```
-make clean
-make
-MIX_EXS=package.exs mix hex.publish
-```
+[logo]: priv/images/project.png
+[logo-large]: priv/images/project-large.png
+[gh-actions-badge]: https://github.com/erlsci/erldn/workflows/ci/badge.svg
+[gh-actions]: https://github.com/erlsci/erldn/actions?query=workflow%3Aci
