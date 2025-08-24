@@ -32,41 +32,41 @@ In your project's `rebar.config`:
 ## Use
 
 ```erlang
-1> erldn:parse_str("{}").
+1> erldn:parse("{}").
 {ok,{map,[]}}
 
-2> erldn:parse_str("1").
+2> erldn:parse("1").
 {ok,1}
 
-3> erldn:parse_str("true").
+3> erldn:parse("true").
 {ok,true}
 
-4> erldn:parse_str("nil").
+4> erldn:parse("nil").
 {ok,nil}
 
-5> erldn:parse_str("[1 true nil]").
+5> erldn:parse("[1 true nil]").
 {ok,{vector,[1,true,nil]}}
 
-6> erldn:parse_str("(1 true nil :foo)").
+6> erldn:parse("(1 true nil :foo)").
 {ok,[1,true,nil,foo]}
 
-7> erldn:parse_str("(1 true nil :foo ns/foo)").
+7> erldn:parse("(1 true nil :foo ns/foo)").
 {ok,[1,true,nil,foo,{symbol,'ns/foo'}]}
 
-8> erldn:parse_str("#{1 true nil :foo ns/foo}").
+8> erldn:parse("#{1 true nil :foo ns/foo}").
 {ok,{set,[1,true,nil,foo,{symbol,'ns/foo'}]}}
 
-9> erldn:parse_str("#myapp/Person {:first \"Fred\" :last \"Mertz\"}").
+9> erldn:parse("#myapp/Person {:first \"Fred\" :last \"Mertz\"}").
 {ok,{tag,'myapp/Person',
          {map,[{first,"Fred"},{last,"Mertz"}]}}}
-         10> erldn:parse_str("#{1 true #_ nil :foo ns/foo}").
+         10> erldn:parse("#{1 true #_ nil :foo ns/foo}").
          {ok,{set,[1,true,{ignore,nil},foo,{symbol,'ns/foo'}]}}
-         11> erldn:parse_str("#{1 true #_ 42 :foo ns/foo}").
+         11> erldn:parse("#{1 true #_ 42 :foo ns/foo}").
          {ok,{set,[1,true,{ignore,42},foo,{symbol,'ns/foo'}]}}
 
  % to_string
 
- 10> {ok, Result} = erldn:parse_str("{:a 42}").
+ 10> {ok, Result} = erldn:parse("{:a 42}").
  {ok,{map,[{a,42}]}}
 
  11> io:format("~s~n", [erldn:to_string(Result)]).
@@ -75,11 +75,14 @@ In your project's `rebar.config`:
 
  % to_erlang
 
- 12> erldn:to_erlang(element(2, erldn:parse_str("[1, nil, :nil, \"asd\"]"))).
+ 12> erldn:to_erlang(element(2, erldn:parse("[1, nil, :nil, \"asd\"]"))).
  [1,nil,nil,<<"asd">>]
 ```
 
 ## API
+
+### parse/1
+TODO:
 
 ### parse_str/1
 parses a string with edn into an erlang data structure maintaining all
