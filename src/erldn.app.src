@@ -1,18 +1,15 @@
 {application, erldn, [
     {description, "An EDN parser for BEAM languages, to read Clojure's Extensible Data Notation"},
-    {vsn, "1.0.6"},
+    {vsn, "1.0.7"},
     {registered, []},
     {mod, {}},
-    {applications, [
-        kernel,
-        stdlib
-    ]},
+    {applications, []},
     {env, []},
     {modules, []},
 
     %% Package metadata
     {pkg_name, erlsci_edn},
-    {licenses, ["Apache-2.0"]},
+    {licenses, ["MIT"]},
     {files, ["src", "include", "rebar.config", "README.md", "LICENSE"]},
     {links, [
         {"GitHub", "https://github.com/erlsci/erldn"}
@@ -20,8 +17,5 @@
     {build_tools, ["rebar3"]},
 
     %% OTP application upgrade instructions
-    {runtime_dependencies, [
-        "kernel-6.0",
-        "stdlib-3.9"
-    ]}
+    {runtime_dependencies, []}
 ]}.
