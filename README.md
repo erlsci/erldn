@@ -6,21 +6,32 @@
 
 *An EDN parser for BEAM languages, to read Clojure's Extensible Data Notation*
 
+## Overview
+
 `erldn` is a low level parser: it simply provides an Erlang data structure.
 
 This project implements EDN support using leex and yecc. Results are tested with eunit.
 
-Notes on how this fork differs from the original:
+## Features
 
+Notes on how this fork differs from the original are given below.
+
+#### v1.2.0
+* TBD
+
+#### v1.1.0
 * provides a new top-level `parse/1` function
 * supports binary input (in addition to the original string input)
-* support file input (if the passed string is a file that exists and ends with `.edn`, it will be read)
+* supports file input (if the passed string is a file that exists and ends with `.edn`, it will be read)
 * provides a `parse_file/1` function
 * adds support for multiple top-level EDN data elements in a single input (returns a list of results)
 * WIP: add support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
-* and [more to come](https://github.com/erlsci/erldn/milestones?sort=title&direction=asc) ...
 
-## Add Dependency
+And [more to come](https://github.com/erlsci/erldn/milestones?sort=title&direction=asc) ...
+
+## Usage
+
+### Add Dependency
 
 In your project's `rebar.config`:
 
@@ -30,7 +41,7 @@ In your project's `rebar.config`:
 ]}.
 ```
 
-## Usage Examples
+### Examples
 
 ```erlang
 1> erldn:parse("{}").
