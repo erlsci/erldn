@@ -1,0 +1,4 @@
+^{:level 1} 
+{:outer ^{:level 2} 
+  {:inner ^{:level 3} 
+    [^:item 1 ^:item 2 ^:item 3]}}

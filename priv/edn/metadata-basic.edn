@@ -1,0 +1,4 @@
+^{:author "Alice"} [1 2 3]
+^:keyword symbol
+^"string-meta" {:key :value}
+^42 some-symbol

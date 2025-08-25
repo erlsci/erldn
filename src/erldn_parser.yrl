@@ -1,10 +1,10 @@
 Nonterminals
-    values value list list_items vector set map key_value_pairs key_value_pair tagged.
+    values value list list_items vector set map key_value_pairs key_value_pair tagged metadata_value.
 
 Terminals
     float integer boolean string nil open_list close_list open_vector
     close_vector open_map close_map sharp ignore keyword symbol char
-    inf_pos inf_neg nan.
+    caret inf_pos inf_neg nan.
 
 Rootsymbol values.
 
@@ -33,6 +33,8 @@ map -> open_map key_value_pairs close_map : {map, '$2'}.
 
 tagged -> sharp symbol value : {tag, unwrap('$2'), '$3'}.
 
+metadata_value -> caret value value : {metadata, '$3', '$2'}.
+
 value -> nil     : unwrap('$1').
 value -> float   : unwrap('$1').
 value -> integer : unwrap('$1').
@@ -55,6 +57,7 @@ value -> symbol  : {symbol, unwrap('$1')}.
 value -> tagged  : '$1'.
 value -> char    : {char, unwrap('$1')}.
 value -> ignore value : {ignore, '$2'}.
+value -> metadata_value : '$1'.
 
 Erlang code.
 

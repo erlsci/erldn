@@ -18,6 +18,7 @@ Notes on how this fork differs from the original are given below.
 
 #### v1.2.0
 * support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
+* support for EDN metadata syntax `^{:meta true} value`
 * TBD
 
 #### v1.1.0
@@ -89,6 +90,15 @@ ok
 
 14> erldn:to_erlang(element(2, erldn:parse("[1, nil, :nil, \"asd\"]"))).
 [1,nil,nil,<<"asd">>]
+
+% metadata
+
+15> erldn:parse("^:keyword value").
+{ok,{metadata,{symbol,value},keyword}}
+16> erldn:parse("^{:author \"Alice\"} [1 2 3]").
+{ok,{metadata,{vector,[1,2,3]},{map,[{author,<<"Alice">>}]}}}
+17> erldn:parse("^:a ^:b value").
+{ok,{metadata,{symbol,value},{map,[{a,true},{b,true}]}}}
 ```
 
 ## API
@@ -154,6 +164,7 @@ This table shows how EDN data types are represented in Erlang after parsing with
 | **positive infinity** | `##Inf` | `{tag, inf, pos}` | `{tag, inf, pos}` |
 | **negative infinity** | `##-Inf` | `{tag, inf, neg}` | `{tag, inf, neg}` |
 | **not a number** | `##NaN` | `{tag, nan, nil}` | `{tag, nan, nil}` |
+| **metadata** | `^:keyword value`, `^{:key val} data` | `{metadata, Value, Meta}` | `{metadata, {symbol, test}, keyword}` |
 
 ## Implementation Status
 
@@ -164,7 +175,7 @@ This table shows how EDN data types are represented in Erlang after parsing with
 | **Unicode chars** | ❌ Limited | `\uNNNN` format not supported |
 | **Octal chars** | ❌ Not implemented | `\oNNN` format not supported |
 | **String escapes** | ⚠️ Partial | Basic escapes only |
-| **Metadata** | ❌ Not implemented | `^{:meta true} value` not supported |
+| **Metadata** | ✅ Supported | `^{:meta true} value` supported |
 
 ## Notes
 
@@ -209,6 +220,7 @@ This table shows how the parsed EDN data structures are transformed by `erldn:to
 | `{tag, nan, nil}` | `not_a_number` | `{tag, nan, nil}` → `not_a_number` |
 | `{tag, Symbol, Value}` | *Handler Result* | Calls registered tag handler or fails |
 | `{ignore, Value}` | *Undefined* | No documented transformation |
+| `{metadata, Value, Meta}` | `{metadata, ErlangValue, ErlangMeta}` | `{metadata, [1,2,3], {map, [{author, <<"Alice">>}]}}` → `{metadata, [1,2,3], dict}` |
 
 ## Tag Handler System
 

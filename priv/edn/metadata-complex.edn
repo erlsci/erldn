@@ -1,0 +1,8 @@
+^{:doc "A vector of maps"} 
+[^{:id 1} {:name "Alice"}
+ ^{:id 2} {:name "Bob"}
+ ^{:id 3} {:name "Charlie"}]
+
+^{:version 1 :author "system"}
+{:users ^{:indexed true} [1 2 3]
+ :config ^:readonly {:debug false}}

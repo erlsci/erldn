@@ -21,6 +21,7 @@ OpenVector  = \[
 CloseVector = \]
 Whites      = [\s|,\n]+
 Sharp       = #
+Caret       = \^
 Slash       = /
 Colon       = :
 Comments    = ;.*\n
@@ -65,6 +66,7 @@ Rules.
 
 {Sharp}_                 : make_token(ignore, TokenLine, TokenChars).
 {Sharp}                  : make_token(sharp, TokenLine, TokenChars).
+{Caret}                  : make_token(caret, TokenLine, TokenChars).
 {Symbol}                 : make_token(symbol, TokenLine, TokenChars).
 {Slash}                  : make_token(symbol, TokenLine, TokenChars).
 {Slash}{Symbol}          : make_token(symbol, TokenLine, TokenChars).
