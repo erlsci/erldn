@@ -140,42 +140,42 @@ Be sure to check the unit tests for usage examples; there are hundreds of them.
 
 This table shows how EDN data types are represented in Erlang after parsing with `erldn:parse/1` or `erldn:parse_str/1`. These are the "raw" parsed representations that preserve EDN semantics and can be converted back to EDN strings.
 
-| EDN Type | EDN Example | Erlang Representation | Erlang Example |
-|----------|-------------|----------------------|----------------|
-| **nil** | `nil` | `nil` (atom) | `nil` |
-| **boolean** | `true`, `false` | boolean atoms | `true`, `false` |
-| **integer** | `42`, `-17`, `+5` | integer | `42`, `-17`, `5` |
-| **integer with N suffix** | `42N` | integer (arbitrary precision marker ignored) | `42` |
-| **float** | `3.14`, `1.2e5` | float | `3.14`, `120000.0` |
-| **float with M suffix** | `3.14M` | float (exact precision marker ignored) | `3.14` |
-| **character** | `\c`, `\A`, `\newline` | `{char, Integer}` | `{char, 99}`, `{char, 65}`, `{char, 10}` |
-| **string** | `"hello world"` | binary (UTF-8) | `<<"hello world">>` |
-| **keyword (simple)** | `:foo` | atom | `foo` |
-| **keyword (namespaced)** | `:ns/foo` | atom | `'ns/foo'` |
-| **keyword (special case)** | `:nil` | `{keyword, nil}` | `{keyword, nil}` |
-| **symbol** | `foo`, `ns/bar`, `/` | `{symbol, Atom}` | `{symbol, foo}`, `{symbol, 'ns/bar'}`, `{symbol, '/'}` |
-| **list** | `(1 2 3)` | list | `[1, 2, 3]` |
-| **vector** | `[1 2 3]` | `{vector, List}` | `{vector, [1, 2, 3]}` |
-| **map** | `{:a 1 :b 2}` | `{map, PropList}` | `{map, [{a, 1}, {b, 2}]}` |
-| **set** | `#{1 2 3}` | `{set, List}` | `{set, [1, 2, 3]}` |
-| **tagged element** | `#inst "2024-01-01"` | `{tag, Symbol, Value}` | `{tag, 'inst', <<"2024-01-01">>}` |
-| **discard element** | `#_ 42` | `{ignore, Value}` | `{ignore, 42}` |
-| **comments** | `; comment` | (ignored during parsing) | (not represented) |
-| **positive infinity** | `##Inf` | `{tag, inf, pos}` | `{tag, inf, pos}` |
-| **negative infinity** | `##-Inf` | `{tag, inf, neg}` | `{tag, inf, neg}` |
-| **not a number** | `##NaN` | `{tag, nan, nil}` | `{tag, nan, nil}` |
-| **metadata** | `^:keyword value`, `^{:key val} data` | `{metadata, Value, Meta}` | `{metadata, {symbol, test}, keyword}` |
+| EDN Type                   | EDN Example                           | Erlang Representation                        | Erlang Example                                         |
+|----------------------------|---------------------------------------|----------------------------------------------|--------------------------------------------------------|
+| **nil**                    | `nil`                                 | `nil` (atom)                                 | `nil`                                                  |
+| **boolean**                | `true`, `false`                       | boolean atoms                                | `true`, `false`                                        |
+| **integer**                | `42`, `-17`, `+5`                     | integer                                      | `42`, `-17`, `5`                                       |
+| **integer with N suffix**  | `42N`                                 | integer (arbitrary precision marker ignored) | `42`                                                   |
+| **float**                  | `3.14`, `1.2e5`                       | float                                        | `3.14`, `120000.0`                                     |
+| **float with M suffix**    | `3.14M`                               | float (exact precision marker ignored)       | `3.14`                                                 |
+| **character**              | `\c`, `\A`, `\newline`                | `{char, Integer}`                            | `{char, 99}`, `{char, 65}`, `{char, 10}`               |
+| **string**                 | `"hello world"`                       | binary (UTF-8)                               | `<<"hello world">>`                                    |
+| **keyword (simple)**       | `:foo`                                | atom                                         | `foo`                                                  |
+| **keyword (namespaced)**   | `:ns/foo`                             | atom                                         | `'ns/foo'`                                             |
+| **keyword (special case)** | `:nil`                                | `{keyword, nil}`                             | `{keyword, nil}`                                       |
+| **symbol**                 | `foo`, `ns/bar`, `/`                  | `{symbol, Atom}`                             | `{symbol, foo}`, `{symbol, 'ns/bar'}`, `{symbol, '/'}` |
+| **list**                   | `(1 2 3)`                             | list                                         | `[1, 2, 3]`                                            |
+| **vector**                 | `[1 2 3]`                             | `{vector, List}`                             | `{vector, [1, 2, 3]}`                                  |
+| **map**                    | `{:a 1 :b 2}`                         | `{map, PropList}`                            | `{map, [{a, 1}, {b, 2}]}`                              |
+| **set**                    | `#{1 2 3}`                            | `{set, List}`                                | `{set, [1, 2, 3]}`                                     |
+| **tagged element**         | `#inst "2024-01-01"`                  | `{tag, Symbol, Value}`                       | `{tag, 'inst', <<"2024-01-01">>}`                      |
+| **discard element**        | `#_ 42`                               | `{ignore, Value}`                            | `{ignore, 42}`                                         |
+| **comments**               | `; comment`                           | (ignored during parsing)                     | (not represented)                                      |
+| **positive infinity**      | `##Inf`                               | `{tag, inf, pos}`                            | `{tag, inf, pos}`                                      |
+| **negative infinity**      | `##-Inf`                              | `{tag, inf, neg}`                            | `{tag, inf, neg}`                                      |
+| **not a number**           | `##NaN`                               | `{tag, nan, nil}`                            | `{tag, nan, nil}`                                      |
+| **metadata**               | `^:keyword value`, `^{:key val} data` | `{metadata, Value, Meta}`                    | `{metadata, {symbol, test}, keyword}`                  |
 
 ## Implementation Status
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Ratios** | ❌ Not implemented | `22/7` will parse as symbol, not ratio |
-| **Advanced integers** | ❌ Not implemented | `0xFF`, `0777`, `36rZ` not supported |
-| **Unicode chars** | ❌ Limited | `\uNNNN` format not supported |
-| **Octal chars** | ❌ Not implemented | `\oNNN` format not supported |
-| **String escapes** | ⚠️ Partial | Basic escapes only |
-| **Metadata** | ✅ Supported | `^{:meta true} value` supported |
+| Feature               | Status             | Notes                                  |
+|-----------------------|--------------------|----------------------------------------|
+| **Ratios**            | ❌ Not implemented  | `22/7` will parse as symbol, not ratio |
+| **Advanced integers** | ❌ Not implemented  | `0xFF`, `0777`, `36rZ` not supported   |
+| **Unicode chars**     | ❌ Limited          | `\uNNNN` format not supported          |
+| **Octal chars**       | ❌ Not implemented  | `\oNNN` format not supported           |
+| **String escapes**    | ⚠️ Partial         | Basic escapes only                     |
+| **Metadata**          | ✅ Supported        | `^{:meta true} value` supported        |
 
 ## Notes
 
@@ -199,28 +199,28 @@ This table shows how EDN data types are represented in Erlang after parsing with
 
 This table shows how the parsed EDN data structures are transformed by `erldn:to_erlang/1` and `erldn:to_erlang/2` into more Erlang-idiomatic representations. These transformations make the data easier to work with in Erlang but cannot be directly converted back to EDN without additional type information.
 
-| Parsed Representation | Erlang-Friendly Result | Example Transformation |
-|----------------------|----------------------|----------------------|
-| `nil` | `nil` | `nil` → `nil` |
-| `true` | `true` | `true` → `true` |
-| `false` | `false` | `false` → `false` |
-| `42` | `42` | `42` → `42` |
-| `3.14` | `3.14` | `3.14` → `3.14` |
-| `{char, 99}` | `"c"` | `{char, 99}` → `"c"` |
-| `<<"hello">>` | `<<"hello">>` | `<<"hello">>` → `<<"hello">>` |
-| `foo` (keyword) | `foo` | `foo` → `foo` |
-| `{keyword, nil}` | `nil` | `{keyword, nil}` → `nil` |
-| `{symbol, foo}` | `{symbol, foo}` | `{symbol, foo}` → `{symbol, foo}` |
-| `[1, 2, 3]` (list) | `[1, 2, 3]` | `[1, 2, 3]` → `[1, 2, 3]` |
-| `{vector, [1, 2, 3]}` | `[1, 2, 3]` | `{vector, [1, 2, 3]}` → `[1, 2, 3]` |
-| `{map, [{a, 1}, {b, 2}]}` | `dict:dict()` | `{map, [{a, 1}, {b, 2}]}` → `dict` with `a→1, b→2` |
-| `{set, [1, 2, 3]}` | `sets:set()` | `{set, [1, 2, 3]}` → `sets` with `{1, 2, 3}` |
-| `{tag, inf, pos}` | `positive_infinity` | `{tag, inf, pos}` → `positive_infinity` |
-| `{tag, inf, neg}` | `negative_infinity` | `{tag, inf, neg}` → `negative_infinity` |
-| `{tag, nan, nil}` | `not_a_number` | `{tag, nan, nil}` → `not_a_number` |
-| `{tag, Symbol, Value}` | *Handler Result* | Calls registered tag handler or fails |
-| `{ignore, Value}` | *Undefined* | No documented transformation |
-| `{metadata, Value, Meta}` | `{metadata, ErlangValue, ErlangMeta}` | `{metadata, [1,2,3], {map, [{author, <<"Alice">>}]}}` → `{metadata, [1,2,3], dict}` |
+| Parsed Representation     | Erlang-Friendly Result                | Notes                                 |
+|---------------------------|---------------------------------------|---------------------------------------|
+| `nil`                     | `nil`                                 |                                       |
+| `true`                    | `true`                                |                                       |
+| `false`                   | `false`                               |                                       |
+| `42`                      | `42`                                  |                                       |
+| `3.14`                    | `3.14`                                |                                       |
+| `{char, 99}`              | `"c"`                                 |                                       |
+| `<<"hello">>`             | `<<"hello">>`                         |                                       |
+| `foo` (keyword)           | `foo`                                 |                                       |
+| `{keyword, nil}`          | `nil`                                 |                                       |
+| `{symbol, foo}`           | `{symbol, foo}`                       |                                       |
+| `[1, 2, 3]` (list)        | `[1, 2, 3]`                           |                                       |
+| `{vector, [1, 2, 3]}`     | `[1, 2, 3]`                           |                                       |
+| `{map, [{a, 1}, {b, 2}]}` | `dict:dict()`                         |                                       |
+| `{set, [1, 2, 3]}`        | `sets:set()`                          |                                       |
+| `{tag, inf, pos}`         | `positive_infinity`                   |                                       |
+| `{tag, inf, neg}`         | `negative_infinity`                   |                                       |
+| `{tag, nan, nil}`         | `not_a_number`                        |                                       |
+| `{tag, Symbol, Value}`    | *Handler Result*                      | Calls registered tag handler or fails |
+| `{ignore, Value}`         | *Undefined*                           | No documented transformation          |
+| `{metadata, Value, Meta}` | `{metadata, ErlangValue, ErlangMeta}` |                                       |
 
 ## Tag Handler System
 
@@ -245,11 +245,11 @@ Handler = fun(Tag, Value, OtherHandlers) -> TransformedValue end
 
 ### Common Tag Examples
 
-| Tag | Example Input | Typical Handler Result |
-|-----|--------------|----------------------|
-| `#inst` | `{tag, 'inst', <<"2024-01-01T12:00:00Z">>}` | `{datetime, {{2024,1,1}, {12,0,0}}}` |
-| `#uuid` | `{tag, 'uuid', <<"550e8400-e29b-41d4-a716-446655440000">>}` | Binary UUID or custom UUID record |
-| Custom tags | `{tag, 'myapp/Person', {map, [...]}}` | Application-specific data structure |
+| Tag         | Example Input                                               | Typical Handler Result               |
+|-------------|-------------------------------------------------------------|--------------------------------------|
+| `#inst`     | `{tag, 'inst', <<"2024-01-01T12:00:00Z">>}`                 | `{datetime, {{2024,1,1}, {12,0,0}}}` |
+| `#uuid`     | `{tag, 'uuid', <<"550e8400-e29b-41d4-a716-446655440000">>}` | Binary UUID or custom UUID record    |
+| Custom tags | `{tag, 'myapp/Person', {map, [...]}}`                       | Application-specific data structure  |
 
 ## Data Structure Transformations
 
