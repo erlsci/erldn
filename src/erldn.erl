@@ -61,6 +61,12 @@ to_erlang({map, Kvs}, Handlers) ->
     dict:from_list(lists:map(fun(V) -> key_vals_to_erlang(V, Handlers) end, Kvs));
 to_erlang(Val, Handlers) when is_list(Val) ->
     lists:map(fun(V) -> to_erlang(V, Handlers) end, Val);
+to_erlang({tag, inf, pos}, _Handlers) ->
+    positive_infinity;
+to_erlang({tag, inf, neg}, _Handlers) ->
+    negative_infinity;
+to_erlang({tag, nan, nil}, _Handlers) ->
+    not_a_number;
 to_erlang({tag, Tag, Val}, Handlers) ->
     Result = lists:keyfind(Tag, 1, Handlers),
 
@@ -126,6 +132,12 @@ to_string(false, Accum) ->
 to_string(nil, Accum) ->
     ["nil" | Accum];
 to_string(Item, Accum) when is_atom(Item) -> [atom_to_list(Item), ":" | Accum];
+to_string({tag, inf, pos}, Accum) ->
+    ["##Inf" | Accum];
+to_string({tag, inf, neg}, Accum) ->
+    ["##-Inf" | Accum];
+to_string({tag, nan, nil}, Accum) ->
+    ["##NaN" | Accum];
 to_string({tag, Tag, Value}, Accum) ->
     [to_string(Value), " ", atom_to_list(Tag), "#" | Accum];
 to_string(Value, Accum) ->

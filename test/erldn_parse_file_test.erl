@@ -31,14 +31,8 @@ test_parse_edn_file(EdnDir, Filename) ->
                 % File read error (unexpected)
                 ?assert(false);
             {error, _, _} ->
-                % TODO: Some files may contain unsupported EDN features (like ##Inf, ##-Inf, ##NaN)
-                % See: https://github.com/erlsci/erldn/issues/10
-                % For now, we expect these to fail gracefully
-                case Filename of
-                    % Known to contain ##Inf, ##-Inf, ##NaN
-                    "edge-numbers.edn" -> ok;
-                    _ -> ?assert(false)
-                end
+                % Parse error - all files should now parse successfully
+                ?assert(false)
         end
     end}.
 

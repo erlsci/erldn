@@ -3,7 +3,8 @@ Nonterminals
 
 Terminals
     float integer boolean string nil open_list close_list open_vector
-    close_vector open_map close_map sharp ignore keyword symbol char.
+    close_vector open_map close_map sharp ignore keyword symbol char
+    inf_pos inf_neg nan.
 
 Rootsymbol values.
 
@@ -37,6 +38,9 @@ value -> float   : unwrap('$1').
 value -> integer : unwrap('$1').
 value -> boolean : unwrap('$1').
 value -> string  : unwrap('$1').
+value -> inf_pos : {tag, 'inf', pos}.
+value -> inf_neg : {tag, 'inf', neg}.
+value -> nan     : {tag, 'nan', nil}.
 value -> list    : '$1'.
 value -> vector  : '$1'.
 value -> set     : '$1'.

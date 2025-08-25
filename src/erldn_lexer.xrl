@@ -7,6 +7,11 @@ Nil  = nil
 Number      = [+-]?[0-9]
 Float       = [+-]?[0-9]+\.[0-9]+([eE][-+]?[0-9]+)?
 
+% special numerical values
+InfPos      = ##Inf
+InfNeg      = ##-Inf  
+NaN         = ##NaN
+
 % delimiters and operators
 OpenList    = \(
 CloseList   = \)
@@ -52,6 +57,12 @@ Rules.
 {BackSlash}.             : {token, {char, TokenLine, hd(tl(TokenChars))}}.
 {Bool}                   : make_token(boolean, TokenLine, TokenChars).
 {Nil}                    : make_token(nil, TokenLine, TokenChars).
+
+% special numerical values (must come before general Sharp rule)
+{InfPos}                 : make_token(inf_pos, TokenLine, TokenChars).
+{InfNeg}                 : make_token(inf_neg, TokenLine, TokenChars).
+{NaN}                    : make_token(nan, TokenLine, TokenChars).
+
 {Sharp}_                 : make_token(ignore, TokenLine, TokenChars).
 {Sharp}                  : make_token(sharp, TokenLine, TokenChars).
 {Symbol}                 : make_token(symbol, TokenLine, TokenChars).

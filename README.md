@@ -17,6 +17,7 @@ This project implements EDN support using leex and yecc. Results are tested with
 Notes on how this fork differs from the original are given below.
 
 #### v1.2.0
+* support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
 * TBD
 
 #### v1.1.0
@@ -25,7 +26,6 @@ Notes on how this fork differs from the original are given below.
 * supports file input (if the passed string is a file that exists and ends with `.edn`, it will be read)
 * provides a `parse_file/1` function
 * adds support for multiple top-level EDN data elements in a single input (returns a list of results)
-* WIP: add support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
 
 And [more to come](https://github.com/erlsci/erldn/milestones?sort=title&direction=asc) ...
 
@@ -151,6 +151,9 @@ This table shows how EDN data types are represented in Erlang after parsing with
 | **tagged element** | `#inst "2024-01-01"` | `{tag, Symbol, Value}` | `{tag, 'inst', <<"2024-01-01">>}` |
 | **discard element** | `#_ 42` | `{ignore, Value}` | `{ignore, 42}` |
 | **comments** | `; comment` | (ignored during parsing) | (not represented) |
+| **positive infinity** | `##Inf` | `{tag, inf, pos}` | `{tag, inf, pos}` |
+| **negative infinity** | `##-Inf` | `{tag, inf, neg}` | `{tag, inf, neg}` |
+| **not a number** | `##NaN` | `{tag, nan, nil}` | `{tag, nan, nil}` |
 
 ## Implementation Status
 
@@ -201,6 +204,9 @@ This table shows how the parsed EDN data structures are transformed by `erldn:to
 | `{vector, [1, 2, 3]}` | `[1, 2, 3]` | `{vector, [1, 2, 3]}` → `[1, 2, 3]` |
 | `{map, [{a, 1}, {b, 2}]}` | `dict:dict()` | `{map, [{a, 1}, {b, 2}]}` → `dict` with `a→1, b→2` |
 | `{set, [1, 2, 3]}` | `sets:set()` | `{set, [1, 2, 3]}` → `sets` with `{1, 2, 3}` |
+| `{tag, inf, pos}` | `positive_infinity` | `{tag, inf, pos}` → `positive_infinity` |
+| `{tag, inf, neg}` | `negative_infinity` | `{tag, inf, neg}` → `negative_infinity` |
+| `{tag, nan, nil}` | `not_a_number` | `{tag, nan, nil}` → `not_a_number` |
 | `{tag, Symbol, Value}` | *Handler Result* | Calls registered tag handler or fails |
 | `{ignore, Value}` | *Undefined* | No documented transformation |
 
