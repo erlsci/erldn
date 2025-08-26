@@ -19,6 +19,7 @@ Notes on how this fork differs from the original are given below.
 #### v1.2.0
 * support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
 * support for EDN metadata syntax `^{:meta true} value`
+* bug fix: symbols cannot start with integers
 * TBD
 
 #### v1.1.0

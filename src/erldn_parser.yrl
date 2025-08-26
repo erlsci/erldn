@@ -4,7 +4,7 @@ Nonterminals
 Terminals
     float integer boolean string nil open_list close_list open_vector
     close_vector open_map close_map sharp ignore keyword symbol char
-    caret inf_pos inf_neg nan.
+    caret inf_pos inf_neg nan hexadecimal octal radix rational.
 
 Rootsymbol values.
 
@@ -35,10 +35,14 @@ tagged -> sharp symbol value : {tag, unwrap('$2'), '$3'}.
 
 metadata_value -> caret value value : {metadata, '$3', '$2'}.
 
-value -> nil     : unwrap('$1').
-value -> float   : unwrap('$1').
-value -> integer : unwrap('$1').
-value -> boolean : unwrap('$1').
+value -> nil         : unwrap('$1').
+value -> float       : unwrap('$1').
+value -> integer     : unwrap('$1').
+value -> hexadecimal : unwrap('$1').
+value -> octal       : unwrap('$1').
+value -> radix       : unwrap('$1').
+value -> rational    : unwrap('$1').
+value -> boolean     : unwrap('$1').
 value -> string  : unwrap('$1').
 value -> inf_pos : {tag, 'inf', pos}.
 value -> inf_neg : {tag, 'inf', neg}.
