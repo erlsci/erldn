@@ -1,0 +1,28 @@
+; Hexadecimal numbers
+0xFF
+0x1A2B
+-0x123
+0X456
++0xABCD
+
+; Octal numbers  
+0777
+0123
+-0456
++0111
+
+; Arbitrary radix numbers
+2r1010
+8r777
+16rFF
+36rZZ
+-2r1111
++36rABC123
+
+; Rational numbers
+22/7
+-3/4
+355/113
++1/2
+1000/1
+-999/333

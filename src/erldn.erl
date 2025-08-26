@@ -79,6 +79,8 @@ to_erlang({tag, Tag, Val}, Handlers) ->
     end;
 to_erlang({metadata, Value, Meta}, Handlers) ->
     {metadata, to_erlang(Value, Handlers), to_erlang(Meta, Handlers)};
+to_erlang({rational, Numerator, Denominator}, _Handlers) ->
+    {rational, Numerator, Denominator};
 to_erlang(Val, _Handlers) ->
     Val.
 
@@ -144,6 +146,9 @@ to_string({tag, Tag, Value}, Accum) ->
     [to_string(Value), " ", atom_to_list(Tag), "#" | Accum];
 to_string({metadata, Value, Meta}, Accum) ->
     [to_string(Value), " ", to_string(Meta), "^" | Accum];
+to_string({rational, Numerator, Denominator}, Accum) ->
+    RationalStr = io_lib:format("~p/~p", [Numerator, Denominator]),
+    [RationalStr | Accum];
 to_string(Value, Accum) ->
     [io_lib:format("~p", [Value]) | Accum].
 
