@@ -10,7 +10,15 @@
 
 %%% API functions
 
-lex_str(Str) -> erldn_lexer:string(Str).
+lex_str(Str) ->
+    case erldn_lexer:string(Str) of
+        {ok, Tokens, Line} ->
+            {ok, Tokens, Line};
+        {error, {_Line, erldn_lexer, {user, {ErrorType, ErrorLine, Chars}}}, _LineNumber} ->
+            {error, ErrorType, {ErrorLine, Chars}};
+        Error ->
+            Error
+    end.
 
 parse(Bin) when is_binary(Bin) ->
     parse_str(binary_to_list(Bin));
