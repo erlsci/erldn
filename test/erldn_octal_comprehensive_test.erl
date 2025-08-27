@@ -43,32 +43,30 @@ octal_signed_negative_test() ->
 
 % Invalid octal numbers should break apart (following Clojure strict validation)
 invalid_octal_08_test() ->
-    % Should break into: 0 and 8
-    {ok, Result} = erldn:parse_str("08"),
-    ?assertEqual([0, 8], Result).
+    % Should generate error for invalid octal
+    Result = erldn:parse_str("08"),
+    ?assertMatch({error, _, _}, Result).
 
 invalid_octal_09_test() ->
-    % Should break into: 0 and 9
-    {ok, Result} = erldn:parse_str("09"),
-    ?assertEqual([0, 9], Result).
+    % Should generate error for invalid octal
+    Result = erldn:parse_str("09"),
+    ?assertMatch({error, _, _}, Result).
 
 invalid_octal_0888_test() ->
-    % Should break into: 0 and 888
-    {ok, Result} = erldn:parse_str("0888"),
-    ?assertEqual([0, 888], Result).
+    % Should generate error for invalid octal
+    Result = erldn:parse_str("0888"),
+    ?assertMatch({error, _, _}, Result).
 
 invalid_octal_089_test() ->
-    % Should break into: 0, 8, 9
-    {ok, Result} = erldn:parse_str("089"),
-    ?assertEqual([0, 8, 9], Result).
+    % Should generate error for invalid octal
+    Result = erldn:parse_str("089"),
+    ?assertMatch({error, _, _}, Result).
 
 % Test that these invalid cases don't parse as valid octals
 invalid_not_single_octal_test() ->
-    {ok, Tokens} = erldn:parse_str("08"),
-    % Should not be a single octal value
-
-    % 8 would be wrong interpretation as base-10
-    ?assertNotEqual(8, Tokens).
+    Result = erldn:parse_str("08"),
+    % Should not be a single octal value - should be error
+    ?assertMatch({error, _, _}, Result).
 
 invalid_mixed_not_octal_test() ->
     {ok, Tokens} = erldn:parse_str("0abc"),

@@ -3,6 +3,14 @@ Definitions.
 Bool = (true|false)
 Nil  = nil
 
+% Invalid numeric patterns that must be caught as errors
+InvalidHex = 0[xX]([0-9a-fA-F]*[g-zG-Z]+[0-9a-zA-Z]*|[^0-9a-fA-F\s\[\]\{\}\(\),;]+)
+InvalidOctal = 0[0-7]*[89]+[0-9]*
+InvalidRational = [+-]?[0-9]+//+[0-9]*
+% More explicit and clearer:
+InvalidRadix = [+-]?[0-9]+[rR]([0-9a-zA-Z]*[^0-9a-zA-Z\s\n\r\t\[\]\{\}\(\),;]+|[^0-9a-zA-Z]+)
+% InvalidNumeric = [+-]?[0-9]+[a-zA-Z]+[0-9a-zA-Z]*
+
 % numbers (ordered by specificity)
 Hexadecimal = [+-]?0[xX][0-9a-fA-F]+
 Octal       = [+-]?0[0-7]+
@@ -48,7 +56,14 @@ String      = "(\\\^.|\\.|[^\"])*"
 
 Rules.
 
-% NEW: Add these rules BEFORE the existing number rules for proper precedence (ordered by specificity)
+% Invalid patterns MUST come first to take precedence
+{InvalidHex}      : {error, {invalid_hexadecimal, TokenLine, TokenChars}}.
+{InvalidOctal}    : {error, {invalid_octal, TokenLine, TokenChars}}.
+{InvalidRational} : {error, {invalid_rational, TokenLine, TokenChars}}.
+{InvalidRadix}    : {error, {invalid_radix, TokenLine, TokenChars}}.
+% {InvalidNumeric}  : {error, {invalid_numeric, TokenLine, TokenChars}}.
+
+% Then the valid numeric patterns (ordered by specificity)
 {Hexadecimal}            : make_token(hexadecimal, TokenLine, TokenChars, fun parse_hexadecimal/1).
 {Octal}                  : make_token(octal, TokenLine, TokenChars, fun parse_octal/1).
 {Zero}                   : make_token(integer, TokenLine, TokenChars, fun parse_zero/1).
