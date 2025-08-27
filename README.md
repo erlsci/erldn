@@ -19,8 +19,9 @@ Notes on how this fork differs from the original are given below.
 #### v1.2.0
 * support for special numerical values `##Inf`, `##-Inf`, and `##NaN`
 * support for EDN metadata syntax `^{:meta true} value`
+* support for hexadecimal, octal, and arbitrary radix numbers numbers `0xFF`, `0777`, `2r1010`, `36rZZ`, etc.
+* support for rational numbers `22/7`, `-3/4`, 
 * bug fix: symbols cannot start with integers
-* TBD
 
 #### v1.1.0
 * provides a new top-level `parse/1` function
@@ -147,6 +148,10 @@ This table shows how EDN data types are represented in Erlang after parsing with
 | **boolean**                | `true`, `false`                       | boolean atoms                                | `true`, `false`                                        |
 | **integer**                | `42`, `-17`, `+5`                     | integer                                      | `42`, `-17`, `5`                                       |
 | **integer with N suffix**  | `42N`                                 | integer (arbitrary precision marker ignored) | `42`                                                   |
+| **hexadecimal**            | `0xFF`, `0x1A2B`, `-0x123`           | integer                                      | `255`, `6699`, `-291`                                  |
+| **octal**                  | `0777`, `0123`, `-0456`               | integer                                      | `511`, `83`, `-302`                                    |
+| **arbitrary radix**        | `2r1010`, `8r777`, `16rFF`, `36rZZ`   | integer                                      | `10`, `511`, `255`, `1295`                             |
+| **rational**               | `22/7`, `-3/4`, `355/113`             | `{rational, integer(), integer()}`           | `{rational, 22, 7}`, `{rational, -3, 4}`, `{rational, 355, 113}` |
 | **float**                  | `3.14`, `1.2e5`                       | float                                        | `3.14`, `120000.0`                                     |
 | **float with M suffix**    | `3.14M`                               | float (exact precision marker ignored)       | `3.14`                                                 |
 | **character**              | `\c`, `\A`, `\newline`                | `{char, Integer}`                            | `{char, 99}`, `{char, 65}`, `{char, 10}`               |
@@ -171,8 +176,8 @@ This table shows how EDN data types are represented in Erlang after parsing with
 
 | Feature               | Status             | Notes                                  |
 |-----------------------|--------------------|----------------------------------------|
-| **Ratios**            | ❌ Not implemented  | `22/7` will parse as symbol, not ratio |
-| **Advanced integers** | ❌ Not implemented  | `0xFF`, `0777`, `36rZ` not supported   |
+| **Ratios**            | ✅ Supported        | `22/7` parses as `{rational, 22, 7}`   |
+| **Advanced integers** | ✅ Supported        | `0xFF`, `0777`, `36rZ` fully supported |
 | **Unicode chars**     | ❌ Limited          | `\uNNNN` format not supported          |
 | **Octal chars**       | ❌ Not implemented  | `\oNNN` format not supported           |
 | **String escapes**    | ⚠️ Partial         | Basic escapes only                     |
@@ -219,6 +224,7 @@ This table shows how the parsed EDN data structures are transformed by `erldn:to
 | `{tag, inf, pos}`         | `positive_infinity`                   |                                       |
 | `{tag, inf, neg}`         | `negative_infinity`                   |                                       |
 | `{tag, nan, nil}`         | `not_a_number`                        |                                       |
+| `{rational, 22, 7}`       | `{rational, 22, 7}`                   |                                       |
 | `{tag, Symbol, Value}`    | *Handler Result*                      | Calls registered tag handler or fails |
 | `{ignore, Value}`         | *Undefined*                           | No documented transformation          |
 | `{metadata, Value, Meta}` | `{metadata, ErlangValue, ErlangMeta}` |                                       |
